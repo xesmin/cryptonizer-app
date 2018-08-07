@@ -1,0 +1,173 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Cryptonizer</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+        <link rel="stylesheet" href="/static/style.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <h1 class="display-4 mt-3">Cryptonizer</h1>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col">
+                    <hr>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+                <% var invSum = 0; var actSum = 0; %>
+                <% for (var i = 0; i < cryptoList.length; i++) {
+                    for (var j = 0; j < transactionsList.length; j++) {
+                        if (transactionsList[j].name == cryptoList[i].id) {
+                            invSum += Math.floor(transactionsList[j].price * transactionsList[j].amount * 1000) /1000;
+                            actSum += Math.floor(transactionsList[j].amount * cryptoList[i].price_usd * 1000) /1000;
+                        }
+                    }
+                }
+                actSum = Math.floor(actSum * 1000) / 1000;
+                invSum = Math.floor(invSum * 1000) / 1000; %>
+            <ul class="nav nav-pills">
+                <li class="nav-item">
+                    <a class="nav-link active" href="/">Lista</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/crypto">Dodaj Nową</a>
+                </li>
+            </ul>
+        </div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col">
+                    <hr>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                        <h5 class="invinfo"><strong>Suma Inwestycji:</strong> $<%= invSum %></h5><h5 class="invinfo" style="display: inline;"><strong>Suma Środków:</strong>
+                            <% if (actSum > invSum) { %>
+                                <span class="up">$<%= actSum %></span>
+                            <% } else if ( actSum < invSum) { %>
+                                <span class="down">$<%= actSum %></span>
+                            <% } else { %>
+                                $<%= actSum %>
+                            <% } %>
+                        </h5>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col">
+                    <hr>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid">
+            <div class="row">
+                    <% for (var i = 0; i < cryptoList.length; i++) { %>
+                        <div class="col-lg-6 mb-3">
+                            <div class="card bg-dark border-secondary crypto-col">
+                                <div class="card-header">
+                                        <h3><%= cryptoList[i].name %> (<%= cryptoList[i].symbol %>)</h3>
+                                </div>
+                                <div class="card-body">
+                                    <% if (cryptoList[i].name != "API Offline") { %>
+                                        <form action="/crypto/del/<%= cryptoList[i].dbid %>" method="POST">
+                                            <div class="form-group">
+                                                <input type="submit" class="btn btn-outline-danger btn-sm" value="Skasuj"></input>
+                                            </div>
+                                            
+                                        </form>
+                                    <% } %>
+                                    <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Kurs</th>
+                                                    <th>Zmiana 1h</th>
+                                                    <th>Zmiana 24h</th>
+                                                    <th>Wolumen 24h</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>$ <%= cryptoList[i].price_usd %></td>
+                                                    <% if (cryptoList[i].change1h < 0) { %>
+                                                        <td class="down"><%= cryptoList[i].change1h %>%</td>
+                                                    <% } else { %>
+                                                        <td class="up"><%= cryptoList[i].change1h %>%</td>
+                                                    <% } %>
+                                                    <% if (cryptoList[i].change24h < 0) { %>
+                                                        <td class="down"><%= cryptoList[i].change24h %>%</td>
+                                                    <% } else { %>
+                                                        <td class="up"><%= cryptoList[i].change24h %>%</td>
+                                                    <% } %>
+                                                        <td><%= cryptoList[i].volume24h %></td>
+                                                </tr>
+                                            </tbody>
+                                    </table>
+                                    <form action="/transaction" method="POST" class="form-inline mb-3">
+                                        <input type="hidden" value="<%= cryptoList[i].id %>" name="name">
+                                        <input required class="form-control transaction-control mr-2" type="number" placeholder="Ilość" name="amount" step="0.001">
+                                        <input required class="form-control transaction-control mr-2" type="number" value="<%= cryptoList[i].price_usd %>" step="0.000001" placeholder="Kurs" name="price">
+                                        <input type="submit" class="btn btn-success" value="Dodaj">
+                                    </form>
+        
+                                    <table class="table table-responsive-sm table-sm ttrans">
+                                        <thead>
+                                            <tr>
+                                                <th>Kurs</th>
+                                                <th>Ilość</th>
+                                                <th>Inwestycja</th>
+                                                <th>Wartość</th>
+                                                <th></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% for (var j = 0; j < transactionsList.length || 0; j++) { 
+                                                if (transactionsList[j].name == cryptoList[i].id) { %>
+                                                <tr>
+                                                    <td><%= transactionsList[j].price %></td>
+                                                    <td><%= transactionsList[j].amount %></td>
+                                                    <td><%= Math.floor(transactionsList[j].price * transactionsList[j].amount * 1000) /1000 %></td>
+                                                    <% if ( (Math.floor(transactionsList[j].price * transactionsList[j].amount * 1000) /1000) > (Math.floor(transactionsList[j].amount * cryptoList[i].price_usd * 1000) /1000)) { %>
+                                                        <td class="down"><%= Math.floor(transactionsList[j].amount * cryptoList[i].price_usd * 1000) /1000 %></td>
+                                                    <% } else { %>
+                                                        <td class="up"><%= Math.floor(transactionsList[j].amount * cryptoList[i].price_usd * 1000) /1000; %></td>
+                                                    <% } %>
+                                                    <td class="closing">
+                                                        <form action="/transaction/<%= transactionsList[j].id %>?_method=DELETE" method="POST">
+                                                            <input type="submit" value="×" class="btn btn-outline-danger btn-sm closing-btn">
+                                                        </form>
+                                                    </td>
+                                                </tr>
+                                            <% } } %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                <% } %>
+            </div>
+        </div>
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+        <script>
+                $(document).ready(function(){
+                    $('tbody').each(function(){
+                      $(this).html($.trim($(this).html()))
+                    });
+                    $('tbody:empty').parents('table').hide();
+                  });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,78 @@
+body {
+    background-color: #1f1f1f !important;
+    color: #eee;
+}
+
+.down {
+    color: #dc3545 !important;
+}
+
+.up {
+    color: #28a745 !important;
+}
+
+hr {
+    border-top: 1px solid #747474;
+}
+
+td, th {
+    font-size: 1.2rem;
+    text-align: right;
+    letter-spacing: 1px;
+    padding: 0.4rem !important;
+}
+
+th {
+    font-weight: 400;
+}
+
+.closing-btn {
+    width: 20px;
+    height: 20px;
+    padding: 0 !important;
+    line-height: 1rem;
+    font-size: 1rem;
+}
+
+.closing {
+    padding: 0 !important;
+}
+
+.ttrans {
+    margin-bottom: 0px;
+}
+
+.crypto-col {
+    height: 100%;
+}
+
+.invinfo {
+    font-weight: 400;
+    letter-spacing: 1px;
+}
+
+.transaction-control {
+    max-width: 30%;
+}
+
+.select2-results__option {
+    color: #000 !important;
+}
+
+@media screen and (max-width: 480px) {
+    td, th {
+        font-size: 0.8rem;
+        letter-spacing: 0px;
+        text-align: center;
+        padding: 10px !important
+    }
+    .closing {
+        padding-top: 5px !important;
+    }
+
+    .closing-btn {
+        width: 25px;
+        height: 25px;
+        padding: 0 0 0 0 !important;
+    }
+}
